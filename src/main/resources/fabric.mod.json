@@ -20,10 +20,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-      "io.blodhgarm.DoorKnocking"
+			"io.blodhgarm.door_knocking.DoorKnocking"
 		],
 		"client": [
-			"io.blodhgarm.DoorKnockingClient"
+			"io.blodhgarm.door_knocking.DoorKnockingClient"
 		]
 	},
 	"mixins": [
