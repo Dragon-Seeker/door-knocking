@@ -8,9 +8,13 @@
 		"blodhgarm"
 	],
 	"contributors": [
-		"FEEDEMFISH"
+		"froyo4u",
+		"FEEDEMFISH",
+		"crimulus"
 	],
-	"contact": {},
+	"contact": {
+		"sources": "https://github.com/Dragon-Seeker/door-knocking"
+	},
 	"license": "MIT",
 	"icon": "assets/doorknocking/icon.png",
 	"environment": "*",
@@ -27,7 +31,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.14.21",
-		"minecraft": "*",
+		"minecraft": "1.20~",
 		"java": ">=17",
 		"fabric-api": "*"
 	}
