@@ -1,4 +1,4 @@
-package io.blodhgarm;
+package io.blodhgarm.door_knocking;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;

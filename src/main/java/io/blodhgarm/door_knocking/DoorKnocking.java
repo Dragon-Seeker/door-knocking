@@ -1,4 +1,4 @@
-package io.blodhgarm;
+package io.blodhgarm.door_knocking;
 
 import com.google.gson.JsonObject;
 import net.fabricmc.api.ModInitializer;
