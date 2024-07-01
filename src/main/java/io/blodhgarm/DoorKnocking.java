@@ -10,9 +10,11 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 
-public class DoorKnock implements ModInitializer {
+public class DoorKnocking implements ModInitializer {
 
-    public static final EasyJsonConfig<Config> CONFIG_HOLDER = new EasyJsonConfig<>(new Identifier("door_knocker", "main"), FabricLoader.getInstance()::getConfigDir,
+    public static final String MODID = "door_knocking";
+
+    public static final EasyJsonConfig<Config> CONFIG_HOLDER = new EasyJsonConfig<>(DoorKnocking.id("main"), FabricLoader.getInstance()::getConfigDir,
             (object) -> {
                 var volumeElement = object.get("volume");
 
@@ -57,4 +59,9 @@ public class DoorKnock implements ModInitializer {
     }
 
     public record Config(float volume) {}
+
+    public static Identifier id(String path) {
+        return new Identifier(MODID, path);
+        //return Identifier.of(MODID, path);
+    }
 }

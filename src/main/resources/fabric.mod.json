@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "doorknock",
+	"id": "door_knocking",
 	"version": "${version}",
-	"name": "DoorKnock",
+	"name": "Door Knocking",
 	"description": "Mod allowing for a knocking noise similar to zombine's when a player attacks a door.",
 	"authors": [
 		"blodhgarm"
@@ -12,18 +12,18 @@
 	],
 	"contact": {},
 	"license": "MIT",
-	"icon": "assets/doorknock/icon.png",
+	"icon": "assets/doorknocking/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"io.blodhgarm.DoorKnock"
+      "io.blodhgarm.DoorKnocking"
 		],
 		"client": [
-			"io.blodhgarm.DoorKnockClient"
+			"io.blodhgarm.DoorKnockingClient"
 		]
 	},
 	"mixins": [
-		"doorknock.mixins.json"
+		"doorknocking.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.21",

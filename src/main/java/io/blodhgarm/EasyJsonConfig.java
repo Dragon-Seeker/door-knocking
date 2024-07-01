@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -61,9 +62,17 @@ public class EasyJsonConfig<T> implements SimpleSynchronousResourceReloadListene
     }
 
     public void init() {
-        File configFile = new File(configPathSup.get() + File.separator + configName.getNamespace() + File.separator + configName.getPath() + ".json");
+        File configFolder = configPathSup.get().resolve(configName.getNamespace()).toFile();
+
+        if (!configFolder.exists()) {
+            if (!configFolder.mkdir()) {
+                LOGGER.warn("[EasyJsonConfig({})] Could not create configuration directory: {}", configName, configFolder.getAbsolutePath());
+            }
+        }
 
         JsonObject configObject = null;
+
+        File configFile = new File(configFolder, configName.getPath() + ".json");
 
         try {
             if (!configFile.exists()) {
@@ -109,6 +118,7 @@ public class EasyJsonConfig<T> implements SimpleSynchronousResourceReloadListene
     @Override
     public Identifier getFabricId() {
         return new Identifier("easy_json_config", configName.toString().replace(":", "/"));
+        //return Identifier.of("easy_json_config", configName.toString().replace(":", "/"));
     }
 
     @Override
