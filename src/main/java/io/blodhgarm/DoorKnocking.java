@@ -61,7 +61,6 @@ public class DoorKnocking implements ModInitializer {
     public record Config(float volume) {}
 
     public static Identifier id(String path) {
-        return new Identifier(MODID, path);
-        //return Identifier.of(MODID, path);
+        return Identifier.of(MODID, path);
     }
 }
