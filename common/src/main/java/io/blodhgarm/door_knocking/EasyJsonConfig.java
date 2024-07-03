@@ -5,9 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.logging.LogUtils;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -20,12 +20,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EasyJsonConfig<T> implements SimpleSynchronousResourceReloadListener {
+public class EasyJsonConfig<T> implements ResourceManagerReloadListener {
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final Gson gson;
-    private final Identifier configName;
+    private final ResourceLocation configName;
 
     private final Supplier<Path> configPathSup;
 
@@ -35,11 +35,11 @@ public class EasyJsonConfig<T> implements SimpleSynchronousResourceReloadListene
     @Nullable
     private T instance = null;
 
-    public EasyJsonConfig(Identifier configName, Supplier<Path> configPathSup, Function<JsonObject, T> reader, Supplier<JsonObject> constructor) {
+    public EasyJsonConfig(ResourceLocation configName, Supplier<Path> configPathSup, Function<JsonObject, T> reader, Supplier<JsonObject> constructor) {
         this(gsonBuilder -> {}, configName, configPathSup, reader, constructor);
     }
 
-    public EasyJsonConfig(Consumer<GsonBuilder> builderConsumer, Identifier configName, Supplier<Path> configPathSup, Function<JsonObject, T> reader, Supplier<JsonObject> factory) {
+    public EasyJsonConfig(Consumer<GsonBuilder> builderConsumer, ResourceLocation configName, Supplier<Path> configPathSup, Function<JsonObject, T> reader, Supplier<JsonObject> factory) {
         var builder = new GsonBuilder().setPrettyPrinting();
 
         builderConsumer.accept(builder);
@@ -114,13 +114,12 @@ public class EasyJsonConfig<T> implements SimpleSynchronousResourceReloadListene
         }
     }
 
-    @Override
-    public Identifier getFabricId() {
-        return Identifier.of("easy_json_config", configName.toString().replace(":", "/"));
+    public ResourceLocation getId() {
+        return ResourceLocation.fromNamespaceAndPath("easy_json_config", configName.toString().replace(":", "/"));
     }
 
     @Override
-    public void reload(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         init();
     }
 }

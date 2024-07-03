@@ -20,14 +20,14 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"io.blodhgarm.door_knocking.DoorKnocking"
+			"io.blodhgarm.door_knocking.fabric.DoorKnockingFabric"
 		],
 		"client": [
-			"io.blodhgarm.door_knocking.DoorKnockingClient"
+			"io.blodhgarm.door_knocking.fabric.DoorKnockingClientFabric"
 		]
 	},
 	"mixins": [
-		"doorknocking.mixins.json"
+		"doorknocking-fabric.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.21",

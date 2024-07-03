@@ -1,0 +1,34 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "door_knocking"
+version = "${version}"
+displayName = "Door Knocking"
+authors = "Blodhgarm, froyo4u, FEEDEMFISH, crimulus"
+credits = "Special thanks to both Emi and C4 for the creation of both Trinkets and Curios"
+description = '''
+Mod allowing for a knocking noise similar to zombine's when a player attacks a door.
+'''
+logoFile = "icon.png"
+
+[[mixins]]
+config = 'doorknocking-common.mixins.json'
+[[mixins]]
+config = 'doorknocking-neoforge.mixins.json'
+
+[[dependencies.door_knocking]]
+modId = "neoforge"
+required = true
+versionRange = "[21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.door_knocking]]
+modId = "minecraft"
+required = true
+versionRange = "[1.21,)"
+ordering = "NONE"
+side = "BOTH"

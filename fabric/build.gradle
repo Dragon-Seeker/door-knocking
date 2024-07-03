@@ -1,0 +1,111 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric {
+        platformPackage = "fabric"
+    }
+}
+
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+repositories {
+    maven { url = "https://api.modrinth.com/maven" }
+    maven { url = "https://maven.wispforest.io/releases" }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = "https://maven.shedaniel.me/" }
+    maven { url = "https://maven.architectury.dev/" }
+    maven { url = "https://maven.terraformersmc.com/" }
+    maven { url = "https://maven.blamejared.com/" } // location of the maven that hosts JEI files since January 2023
+    maven { url = "https://modmaven.dev" } // location of a maven mirror for JEI files, as a fallback
+}
+
+sourceSets {
+    testmod {
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.compileClasspath
+    }
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+processTestmodResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+loom {
+    //accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+shadowJar {
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier.set "dev-shadow"
+}
+
+remapJar {
+    injectAccessWidener = true
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set "fabric"
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+def ENV = System.getenv()
+
+publishing {
+    publications {
+        mavenFabric(MavenPublication) {
+            artifactId = "${rootProject.archives_base_name}-${project.name}"
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url ENV.MAVEN_URL
+            credentials {
+                username ENV.MAVEN_USER
+                password ENV.MAVEN_PASSWORD
+            }
+        }
+    }
+}

@@ -1,0 +1,45 @@
+architectury {
+    common(rootProject.enabled_platforms.split(","))
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/door_knocking.accesswidener")
+}
+
+repositories {
+    maven { url "https://maven.fabricmc.net/" }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.architectury.dev/" }
+    maven { url "https://maven.terraformersmc.com/" }
+    maven { url "https://maven.blamejared.com/" } // location of the maven that hosts JEI files since January 2023
+    maven { url "https://modmaven.dev" } // location of a maven mirror for JEI files, as a fallback
+}
+
+dependencies {
+    // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
+    // Do NOT use other classes from fabric loader
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+
+    compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
+}
+
+def ENV = System.getenv()
+
+publishing {
+    publications {
+        mavenCommon(MavenPublication) {
+            artifactId = "${rootProject.archives_base_name}-${project.name}"
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url ENV.MAVEN_URL
+            credentials {
+                username ENV.MAVEN_USER
+                password ENV.MAVEN_PASSWORD
+            }
+        }
+    }
+}
