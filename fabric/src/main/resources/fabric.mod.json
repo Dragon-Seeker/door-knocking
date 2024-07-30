@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "door_knocking",
+	"id": "doorknocking",
 	"version": "${version}",
 	"name": "Door Knocking",
 	"description": "Mod allowing for a knocking noise similar to zombine's when a player attacks a door.",

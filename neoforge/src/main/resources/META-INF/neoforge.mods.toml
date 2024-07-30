@@ -12,7 +12,7 @@ credits = "Special thanks to both Emi and C4 for the creation of both Trinkets a
 description = '''
 Mod allowing for a knocking noise similar to zombine's when a player attacks a door.
 '''
-logoFile = "icon.png"
+logoFile = "assets/doorknocking/icon.png"
 
 [[mixins]]
 config = 'doorknocking-common.mixins.json'
