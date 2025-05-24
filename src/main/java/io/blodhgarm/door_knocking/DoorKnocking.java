@@ -43,6 +43,9 @@ public class DoorKnocking implements ModInitializer {
                 } else if (blockState.isIn(BlockTags.TRAPDOORS)) {
                     isWooden = blockState.isIn(BlockTags.WOODEN_TRAPDOORS);
                     pitch = 4.0f;
+                } else if (blockState.isIn(BlockTags.FENCE_GATES)) {
+                    isWooden = !blockstate.isIn(new Identifier("metalfences", "metal_fence_gates"));
+                    pitch = 1.0f;
                 } else {
                     return ActionResult.PASS;
                 }
