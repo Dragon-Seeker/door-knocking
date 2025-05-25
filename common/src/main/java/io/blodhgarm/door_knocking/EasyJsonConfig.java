@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -55,9 +56,34 @@ public class EasyJsonConfig<T> implements ResourceManagerReloadListener {
         init();
     }
 
-    @Nullable
-    public T instance() {
+    public T instanceOrNull() {
         return this.instance;
+    }
+
+    public T instance() {
+        if (this.instance == null) throw new IllegalStateException("Unable to get the given instance object for EasyJsonConfig: " + configName.toString());
+
+        return this.instance;
+    }
+
+    public void save(JsonObject configObject) {
+        File configFolder = configPathSup.get().resolve(configName.getNamespace()).toFile();
+
+        File configFile = new File(configFolder, configName.getPath() + ".json");
+
+        try {
+            if (!configFile.exists()) {
+                Files.createFile(configFile.toPath());
+            }
+
+            try (FileWriter writer = new FileWriter(configFile)) {
+                writer.write(gson.toJson(configObject));
+            }
+        } catch (IOException exception) {
+            LOGGER.error("[EasyJsonConfig({})]: Unable to create the needed config file, using default values!", configName, exception);
+        } catch (JsonSyntaxException exception) {
+            LOGGER.error("[EasyJsonConfig({})]: Unable to read the needed config file, using default values!", configName, exception);
+        }
     }
 
     public void init() {
@@ -98,9 +124,27 @@ public class EasyJsonConfig<T> implements ResourceManagerReloadListener {
         try {
             if(configObject == null) configObject = this.factory.get();
 
-            this.instance = reader.apply(configObject);
+            var result = reader.apply(configObject);
 
-            LOGGER.info("[EasyJsonConfig({})]: Loaded Config File!", configName);
+            if (result == null) {
+                LOGGER.info("[EasyJsonConfig({})]: Config File missing desired fields, merging default values where needed!", configName);
+
+                var mixedObject = factory.get();
+
+                mixedObject.asMap().putAll(configObject.asMap());
+
+                result = reader.apply(mixedObject);
+
+                save(mixedObject);
+            }
+
+            if (result != null) {
+                this.instance = result;
+
+                LOGGER.info("[EasyJsonConfig({})]: Loaded Config File!", configName);
+            } else {
+                LOGGER.error("[EasyJsonConfig({})]: Unable to deserialize the needed config as result was null!", configName);
+            }
         } catch (Exception e) {
             LOGGER.error("[EasyJsonConfig({})]: Unable to deserialize the needed config, using default values!", configName, e);
 
