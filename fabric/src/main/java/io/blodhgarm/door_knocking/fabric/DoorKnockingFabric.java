@@ -18,8 +18,15 @@ public class DoorKnockingFabric implements ModInitializer {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> DoorKnocking.attemptDoorInteraction(player, world, pos));
 
         var listener = new SimpleSynchronousResourceReloadListener() {
-            @Override public ResourceLocation getFabricId() { return DoorKnocking.CONFIG_HOLDER.getId(); }
-            @Override public void onResourceManagerReload(ResourceManager resourceManager) { DoorKnocking.CONFIG_HOLDER.onResourceManagerReload(resourceManager); }
+            @Override
+            public ResourceLocation getFabricId() {
+                return DoorKnocking.CONFIG_HOLDER.getId();
+            }
+
+            @Override
+            public void onResourceManagerReload(ResourceManager resourceManager) {
+                DoorKnocking.CONFIG_HOLDER.onResourceManagerReload(resourceManager);
+            }
         };
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(listener);
